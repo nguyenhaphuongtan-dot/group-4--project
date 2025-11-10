@@ -1,3 +1,82 @@
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { selectUser } from '../store/slices/authSlice';
+import './RBACDemo.css';
+
+const RBACDemo = () => {
+  const user = useSelector(selectUser);
+  const role = user?.role || 'guest';
+
+  const permissions = {
+    admin: ['VIEW_DASHBOARD', 'MANAGE_USERS', 'VIEW_ANALYTICS'],
+    user: ['VIEW_PROFILE', 'EDIT_PROFILE'],
+    guest: []
+  };
+
+  const userPermissions = permissions[role] || [];
+
+  return (
+    <div className="rbac-demo" style={{ padding: 20 }}>
+      <h2>🔐 RBAC Demo</h2>
+      <p>Role: <strong>{role}</strong></p>
+
+      <div style={{ marginTop: 12 }}>
+        <h4>Your permissions</h4>
+        {userPermissions.length === 0 ? (
+          <p>No permissions assigned.</p>
+        ) : (
+          <ul>
+            {userPermissions.map(p => (
+              <li key={p}>{p}</li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default RBACDemo;
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { selectUser } from '../store/slices/authSlice';
+import './RBACDemo.css';
+
+const RBACDemo = () => {
+  const user = useSelector(selectUser);
+
+  const role = user?.role || 'guest';
+
+  const permissions = {
+    admin: ['VIEW_DASHBOARD', 'MANAGE_USERS', 'VIEW_ANALYTICS'],
+    user: ['VIEW_PROFILE', 'EDIT_PROFILE'],
+    guest: []
+  };
+
+  const userPermissions = permissions[role] || [];
+
+  return (
+    <div className="rbac-demo" style={{ padding: 20 }}>
+      <h2>🔐 RBAC Demo</h2>
+      <p>Role: <strong>{role}</strong></p>
+
+      <div style={{ marginTop: 12 }}>
+        <h4>Your permissions</h4>
+        {userPermissions.length === 0 ? (
+          <p>No permissions assigned.</p>
+        ) : (
+          <ul>
+            {userPermissions.map(p => (
+              <li key={p}>{p}</li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default RBACDemo;
 import React from 'react';import React from 'react';import React from 'react';import React from 'react';/**/**
 
 
