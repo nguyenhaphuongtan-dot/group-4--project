@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUser, selectIsLoading, selectError } from '../store/slices/authSlice';
+import { loginUser, registerUser, selectIsLoading, selectError } from '../store/slices/authSlice';
 import { useNavigate } from 'react-router-dom';
 import '../styles/LoginPage.css';
 
@@ -16,11 +16,22 @@ const LoginPage = () => {
   const error = useSelector(selectError);
 
   const [formData, setFormData] = useState({
+    name: '',
     email: '',
     password: ''
   });
 
   const [mode, setMode] = useState('login'); // 'login' or 'register'
+
+  const handleModeSwitch = () => {
+    setMode(mode === 'login' ? 'register' : 'login');
+    // Clear form khi chuyển mode
+    setFormData({
+      name: '',
+      email: '',
+      password: ''
+    });
+  };
 
   const handleChange = (e) => {
     setFormData({
@@ -32,16 +43,40 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    // Validation cho register
+    if (mode === 'register') {
+      if (formData.name.trim().length < 2) {
+        alert('Tên phải có ít nhất 2 ký tự');
+        return;
+      }
+      if (formData.password.length < 6) {
+        alert('Mật khẩu phải có ít nhất 6 ký tự');
+        return;
+      }
+    }
+    
     try {
-      const result = await dispatch(loginUser({
-        email: formData.email,
-        password: formData.password
-      })).unwrap();
-      
-      console.log('✅ Login thành công:', result);
-      navigate('/profile'); // Chuyển đến trang profile sau khi login thành công
+      if (mode === 'login') {
+        const result = await dispatch(loginUser({
+          email: formData.email,
+          password: formData.password
+        })).unwrap();
+        
+        console.log('✅ Login thành công:', result);
+        navigate('/profile');
+      } else {
+        // Register mode
+        const result = await dispatch(registerUser({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password
+        })).unwrap();
+        
+        console.log('✅ Đăng ký thành công:', result);
+        navigate('/profile');
+      }
     } catch (error) {
-      console.error('❌ Login thất bại:', error);
+      console.error('❌ Thao tác thất bại:', error);
     }
   };
 
@@ -60,8 +95,11 @@ const LoginPage = () => {
               <input
                 type="text"
                 name="name"
+                value={formData.name}
+                onChange={handleChange}
                 placeholder="Nhập họ tên"
                 className="form-input"
+                required
               />
             </div>
           )}
@@ -117,7 +155,7 @@ const LoginPage = () => {
             <button 
               type="button"
               className="mode-switch"
-              onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
+              onClick={handleModeSwitch}
             >
               {mode === 'login' ? 'Đăng ký' : 'Đăng nhập'}
             </button>
@@ -125,22 +163,43 @@ const LoginPage = () => {
         </div>
 
         <div className="test-accounts">
-          <h4>🧪 Tài khoản test:</h4>
+          <h4>🧪 {mode === 'login' ? 'Tài khoản test' : 'Tài khoản mẫu'}:</h4>
           <div className="test-buttons">
-            <button 
-              type="button"
-              onClick={() => setFormData({ email: 'admin@test.com', password: '123456' })}
-              className="test-btn admin"
-            >
-              🛡️ Admin
-            </button>
-            <button 
-              type="button"
-              onClick={() => setFormData({ email: 'user@test.com', password: '123456' })}
-              className="test-btn user"
-            >
-              👤 User
-            </button>
+            {mode === 'login' ? (
+              <>
+                <button 
+                  type="button"
+                  onClick={() => setFormData({ name: 'Admin Test', email: 'admin@test.com', password: '123456' })}
+                  className="test-btn admin"
+                >
+                  🛡️ Admin
+                </button>
+                <button 
+                  type="button"
+                  onClick={() => setFormData({ name: 'User Test', email: 'user@test.com', password: '123456' })}
+                  className="test-btn user"
+                >
+                  👤 User
+                </button>
+              </>
+            ) : (
+              <>
+                <button 
+                  type="button"
+                  onClick={() => setFormData({ name: 'Nguyễn Văn A', email: 'nguyenvana@example.com', password: '123456' })}
+                  className="test-btn user"
+                >
+                  👤 Mẫu 1
+                </button>
+                <button 
+                  type="button"
+                  onClick={() => setFormData({ name: 'Trần Thị B', email: 'tranthib@example.com', password: '123456' })}
+                  className="test-btn user"
+                >
+                  👤 Mẫu 2
+                </button>
+              </>
+            )}
           </div>
         </div>
 

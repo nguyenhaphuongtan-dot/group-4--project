@@ -64,15 +64,29 @@ export const registerUser = createAsyncThunk(
   'auth/registerUser',
   async ({ name, email, password }, { rejectWithValue }) => {
     try {
-      const response = await api.post('/api/auth/register', { name, email, password });
+      console.log('📝 Calling register API:', API_BASE_URL);
       
-      // Lưu token vào localStorage
-      if (response.data.token) {
+      const response = await api.post('/api/auth/register', { 
+        name, 
+        email, 
+        password 
+      });
+
+      console.log('✅ Register response:', response.data);
+
+      if (response.data.success) {
+        // Store token
         localStorage.setItem('token', response.data.token);
+        
+        return {
+          user: response.data.user,
+          token: response.data.token
+        };
+      } else {
+        return rejectWithValue(response.data.message || 'Đăng ký thất bại');
       }
-      
-      return response.data;
     } catch (error) {
+      console.error('❌ Register error:', error);
       const message = error.response?.data?.message || 'Đăng ký thất bại';
       return rejectWithValue(message);
     }
