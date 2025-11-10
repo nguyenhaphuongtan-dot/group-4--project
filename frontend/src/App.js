@@ -1,120 +1,185 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { adminService } from "./services/api";
+import API_CONFIG from "./config/api";
 
 function App() {
   const [users, setUsers] = useState([]);
-  const [newUser, setNewUser] = useState({ name: "", email: "" });
+  const [newUser, setNewUser] = useState({ username: "", email: "", fullName: "" });
   const [editingUser, setEditingUser] = useState(null); // User đang sửa
-  const [editForm, setEditForm] = useState({ name: "", email: "" });
+  const [editForm, setEditForm] = useState({ username: "", email: "", fullName: "" });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  // Lấy dữ liệu từ backend (MongoDB)
+  // Lấy dữ liệu từ backend API
   useEffect(() => {
-    axios
-      .get("http://localhost:3000/users")
-      .then((res) => {
-        setUsers(res.data);
-      })
-      .catch((err) => {
-        console.error("Lỗi khi lấy dữ liệu:", err);
-      });
+    fetchUsers();
   }, []);
 
+  const fetchUsers = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const response = await adminService.getUsers();
+      setUsers(response.data.users || []);
+    } catch (err) {
+      console.error("Lỗi khi lấy dữ liệu:", err);
+      setError("Không thể kết nối với server. Đang kết nối tới: " + API_CONFIG.BASE_URL);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Thêm user
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    axios
-      .post("http://localhost:3000/users", newUser)
-      .then((res) => {
-        setUsers([...users, res.data]); // Cập nhật lại danh sách hiển thị
-        setNewUser({ name: "", email: "" });
-      })
-      .catch((err) => {
-        console.error("Lỗi khi thêm user:", err);
-      });
+    setError("");
+    try {
+      const response = await adminService.createUser(newUser);
+      await fetchUsers(); // Refresh danh sách
+      setNewUser({ username: "", email: "", fullName: "" });
+    } catch (err) {
+      console.error("Lỗi khi thêm user:", err);
+      setError("Không thể thêm user: " + (err.response?.data?.message || err.message));
+    }
   };
 
   // Xóa user
   const handleDelete = async (id) => {
-    await axios.delete(`http://localhost:3000/users/${id}`);
-    setUsers(users.filter((user) => user._id !== id));
+    setError("");
+    try {
+      await adminService.deleteUser(id);
+      setUsers(users.filter((user) => user._id !== id));
+    } catch (err) {
+      console.error("Lỗi khi xóa user:", err);
+      setError("Không thể xóa user: " + (err.response?.data?.message || err.message));
+    }
   };
 
   // Bắt đầu sửa user
   const handleEdit = (user) => {
     setEditingUser(user);
-    setEditForm({ name: user.name, email: user.email });
+    setEditForm({ 
+      username: user.username, 
+      email: user.email, 
+      fullName: user.fullName 
+    });
   };
 
   // Lưu user đã sửa
   const handleUpdate = async (e) => {
     e.preventDefault();
-    const res = await axios.put(
-      `http://localhost:3000/users/${editingUser._id}`,
-      editForm
-    );
-    setUsers(users.map((u) => (u._id === editingUser._id ? res.data : u)));
-    setEditingUser(null);
+    setError("");
+    try {
+      const response = await adminService.updateUser(editingUser._id, editForm);
+      setUsers(users.map((u) => (u._id === editingUser._id ? response.data.user : u)));
+      setEditingUser(null);
+    } catch (err) {
+      console.error("Lỗi khi cập nhật user:", err);
+      setError("Không thể cập nhật user: " + (err.response?.data?.message || err.message));
+    }
   };
 
   return (
     <div style={{ padding: "20px" }}>
-      <h1>Danh sách User</h1>
-      <ul>
-        {users.map((u) => (
-          <li key={u._id}>
-            {u.name} - {u.email}
-            <button
-              onClick={() => handleEdit(u)}
-              style={{ marginLeft: 8 }}
-            >
-              Sửa
-            </button>
-            <button
-              onClick={() => handleDelete(u._id)}
-              style={{ marginLeft: 4 }}
-            >
-              Xóa
-            </button>
-          </li>
-        ))}
-      </ul>
+      <h1>Group 4 - User Management</h1>
+      <p>Kết nối tới: <code>{API_CONFIG.BASE_URL}</code></p>
+      
+      {error && (
+        <div style={{ color: "red", backgroundColor: "#ffe6e6", padding: "10px", marginBottom: "10px" }}>
+          {error}
+        </div>
+      )}
+      
+      {loading && <p>Đang tải dữ liệu...</p>}
+      
+      <h2>Danh sách Users</h2>
+      {users.length === 0 ? (
+        <p>Chưa có user nào</p>
+      ) : (
+        <ul>
+          {users.map((u) => (
+            <li key={u._id} style={{ marginBottom: "10px" }}>
+              <strong>{u.fullName}</strong> (@{u.username}) - {u.email}
+              {u.role && <span> - Role: {u.role.name}</span>}
+              <button
+                onClick={() => handleEdit(u)}
+                style={{ marginLeft: 8 }}
+              >
+                Sửa
+              </button>
+              <button
+                onClick={() => handleDelete(u._id)}
+                style={{ marginLeft: 4 }}
+              >
+                Xóa
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
 
-      <h2>Thêm User</h2>
+      <h2>Thêm User Mới</h2>
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Tên"
-          value={newUser.name}
-          onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
-          required
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          value={newUser.email}
-          onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-          required
-        />
-        <button type="submit">Thêm</button>
+        <div style={{ marginBottom: "10px" }}>
+          <input
+            type="text"
+            placeholder="Username"
+            value={newUser.username}
+            onChange={(e) => setNewUser({ ...newUser, username: e.target.value })}
+            required
+            style={{ marginRight: "10px", padding: "5px" }}
+          />
+          <input
+            type="text"
+            placeholder="Full Name"
+            value={newUser.fullName}
+            onChange={(e) => setNewUser({ ...newUser, fullName: e.target.value })}
+            required
+            style={{ marginRight: "10px", padding: "5px" }}
+          />
+          <input
+            type="email"
+            placeholder="Email"
+            value={newUser.email}
+            onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+            required
+            style={{ marginRight: "10px", padding: "5px" }}
+          />
+          <button type="submit">Thêm User</button>
+        </div>
       </form>
 
       {editingUser && (
-        <div>
-          <h2>Sửa User</h2>
+        <div style={{ backgroundColor: "#f5f5f5", padding: "15px", marginTop: "20px" }}>
+          <h2>Sửa User: {editingUser.fullName}</h2>
           <form onSubmit={handleUpdate}>
-            <input
-              type="text"
-              value={editForm.name}
-              onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-              required
-            />
-            <input
-              type="email"
-              value={editForm.email}
-              onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
-              required
-            />
-            <button type="submit">Lưu</button>
+            <div style={{ marginBottom: "10px" }}>
+              <input
+                type="text"
+                placeholder="Username"
+                value={editForm.username}
+                onChange={(e) => setEditForm({ ...editForm, username: e.target.value })}
+                required
+                style={{ marginRight: "10px", padding: "5px" }}
+              />
+              <input
+                type="text"
+                placeholder="Full Name"
+                value={editForm.fullName}
+                onChange={(e) => setEditForm({ ...editForm, fullName: e.target.value })}
+                required
+                style={{ marginRight: "10px", padding: "5px" }}
+              />
+              <input
+                type="email"
+                placeholder="Email"
+                value={editForm.email}
+                onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+                required
+                style={{ marginRight: "10px", padding: "5px" }}
+              />
+            </div>
+            <button type="submit">Lưu Thay Đổi</button>
             <button
               type="button"
               onClick={() => setEditingUser(null)}

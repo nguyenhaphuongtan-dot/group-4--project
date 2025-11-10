@@ -112,6 +112,9 @@ export const adminService = {
   getUserById: (id) => 
     apiClient.get(API_CONFIG.ENDPOINTS.ADMIN.USER_BY_ID(id)),
   
+  createUser: (userData) => 
+    apiClient.post(API_CONFIG.ENDPOINTS.ADMIN.USERS, userData),
+  
   updateUser: (id, userData) => 
     apiClient.put(API_CONFIG.ENDPOINTS.ADMIN.USER_BY_ID(id), userData),
   
