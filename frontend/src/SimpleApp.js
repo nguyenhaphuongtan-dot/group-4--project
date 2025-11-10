@@ -11,6 +11,7 @@ import { getUserProfile, selectIsAuthenticated } from './store/slices/authSlice'
 // Import components
 import LoginPageRedux from './pages/LoginPageRedux';
 import ProfilePageRedux from './pages/ProfilePageRedux';
+import AdminPageRedux from './pages/AdminPageRedux';
 import ProtectedRouteRedux from './components/ProtectedRouteRedux';
 
 // Simple Home Page
@@ -47,22 +48,38 @@ const HomePage = () => {
           <div>✅ <strong>Authentication</strong> - {isAuthenticated ? 'Đã đăng nhập' : 'Chưa đăng nhập'}</div>
         </div>
 
-        <div style={{ display: 'flex', gap: '15px', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', gap: '15px', justifyContent: 'center', flexWrap: 'wrap' }}>
           {isAuthenticated ? (
-            <button 
-              onClick={() => window.location.href = '/profile'}
-              style={{
-                padding: '12px 24px',
-                background: '#28a745',
-                color: 'white',
-                border: 'none',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontSize: '16px'
-              }}
-            >
-              👤 Profile
-            </button>
+            <>
+              <button 
+                onClick={() => window.location.href = '/profile'}
+                style={{
+                  padding: '12px 24px',
+                  background: '#28a745',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  fontSize: '16px'
+                }}
+              >
+                👤 Profile
+              </button>
+              <button 
+                onClick={() => window.location.href = '/admin'}
+                style={{
+                  padding: '12px 24px',
+                  background: '#dc3545',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  fontSize: '16px'
+                }}
+              >
+                🛡️ Quản lý User
+              </button>
+            </>
           ) : (
             <button 
               onClick={() => window.location.href = '/login'}
@@ -116,6 +133,14 @@ const SimpleApp = () => {
             element={
               <ProtectedRouteRedux>
                 <ProfilePageRedux />
+              </ProtectedRouteRedux>
+            } 
+          />
+          <Route 
+            path="/admin" 
+            element={
+              <ProtectedRouteRedux adminOnly={true}>
+                <AdminPageRedux />
               </ProtectedRouteRedux>
             } 
           />

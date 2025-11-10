@@ -99,8 +99,8 @@ const ProfilePage = () => {
 
         <div className="profile-actions">
           {user.role === 'admin' && (
-            <button onClick={navigateToAdmin} className="admin-button">
-              🛡️ Quản trị Admin
+            <button onClick={() => navigate('/admin')} className="admin-button">
+              🛡️ Quản lý User
             </button>
           )}
           
