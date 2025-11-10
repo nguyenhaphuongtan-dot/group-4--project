@@ -1,27 +1,50 @@
-import React from 'react';import React from 'react';import React from 'react';/**/**
+import React from 'react';import React from 'react';import React from 'react';import React from 'react';/**/**
 
 
 
-const RBACDemo = () => {import { useSelector } from 'react-redux';
+const RBACDemo = () => {
 
   return (
 
-    <div style={{ padding: '20px' }}>import { selectUser } from '../store/slices/authSlice';import { useSelector } from 'react-redux';
+    <div style={{ padding: '20px' }}>const RBACDemo = () => {import { useSelector } from 'react-redux';
 
       <h2>🔐 RBAC Demo</h2>
 
-      <p>Role-Based Access Control demonstration</p>
+      <p>Role-Based Access Control System</p>  return (
 
       <div style={{ 
 
-        background: '#f8f9ff', const RBACDemo = () => {import { selectUser } from '../store/slices/authSlice'; * RBAC Demo Component   * RBAC Demo Component  
+        background: '#f8f9ff',     <div style={{ padding: '20px' }}>import { selectUser } from '../store/slices/authSlice';import { useSelector } from 'react-redux';
 
         border: '1px solid #e0e7ff', 
 
-        borderRadius: '8px',   const user = useSelector(selectUser);
+        borderRadius: '8px',       <h2>🔐 RBAC Demo</h2>
 
         padding: '20px' 
 
+      }}>      <p>Role-Based Access Control demonstration</p>
+
+        <h3>Phân quyền theo vai trò</h3>
+
+        <ul>      <div style={{ 
+
+          <li><strong>Admin:</strong> Có tất cả quyền hạn</li>
+
+          <li><strong>User:</strong> Chỉ có quyền cơ bản</li>        background: '#f8f9ff', const RBACDemo = () => {import { selectUser } from '../store/slices/authSlice'; * RBAC Demo Component   * RBAC Demo Component  
+
+        </ul>
+
+      </div>        border: '1px solid #e0e7ff', 
+
+    </div>
+
+  );        borderRadius: '8px',   const user = useSelector(selectUser);
+
+};
+
+        padding: '20px' 
+
+export default RBACDemo;
       }}>
 
         <h3>Hệ thống phân quyền RBAC</h3>

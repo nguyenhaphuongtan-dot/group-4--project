@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 import { selectUser } from '../store/slices/authSlice';
 import AddUser from '../components/AddUser';
 import UserList from '../components/UserList';
-import RBACDemo from '../components/RBACDemo';
+// import RBACDemo from '../components/RBACDemo';
 import './AdminPage.css';
 
 const AdminPage = () => {
@@ -112,7 +112,12 @@ const AdminPage = () => {
             <div className="section-header">
               <h2>🔐 RBAC Demo</h2>
             </div>
-            <RBACDemo />
+            <div style={{ padding: '20px', background: '#f8f9ff', borderRadius: '8px' }}>
+              <h3>Role-Based Access Control</h3>
+              <p><strong>Admin:</strong> Có tất cả quyền hạn - quản lý users, xem analytics, settings</p>
+              <p><strong>User:</strong> Chỉ có quyền cơ bản - xem profile, đổi mật khẩu</p>
+              <p>Hệ thống RBAC đang hoạt động thông qua ProtectedRoute component!</p>
+            </div>
           </div>
         );
 
