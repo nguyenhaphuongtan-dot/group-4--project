@@ -12,12 +12,14 @@ function TestConnection() {
   const testConnection = async () => {
     try {
       setStatus('Đang kết nối tới backend...');
+      setError('');
       
-      // Test simple health check
-      const response = await fetch(`${backendUrl}/health`);
+      // Test root endpoint first
+      const response = await fetch(`${backendUrl}/`);
       
       if (response.ok) {
-        setStatus('✅ Kết nối backend thành công!');
+        const data = await response.json();
+        setStatus(`✅ Backend hoạt động! ${data.message}`);
       } else {
         setStatus(`❌ Backend trả về status: ${response.status}`);
       }
@@ -25,6 +27,27 @@ function TestConnection() {
       console.error('Connection error:', err);
       setError(`❌ Lỗi kết nối: ${err.message}`);
       setStatus('❌ Không thể kết nối với backend');
+    }
+  };
+
+  const testHealthCheck = async () => {
+    try {
+      setStatus('Đang test health endpoint...');
+      setError('');
+      
+      // Test health endpoint
+      const response = await fetch(`${backendUrl}/api/health`);
+      
+      if (response.ok) {
+        const data = await response.json();
+        setStatus(`✅ Health check thành công! Status: ${data.status || 'OK'}`);
+      } else {
+        setStatus(`❌ Health endpoint trả về: ${response.status}`);
+      }
+    } catch (err) {
+      console.error('Health check error:', err);
+      setError(`❌ Health check lỗi: ${err.message}`);
+      setStatus('❌ Không thể test health endpoint');
     }
   };
 
@@ -80,10 +103,13 @@ function TestConnection() {
       
       <div>
         <button onClick={testConnection} style={{ marginRight: '10px' }}>
+          🔄 Test Root Endpoint
+        </button>
+        <button onClick={testHealthCheck} style={{ marginRight: '10px' }}>
           🔄 Test Health Check
         </button>
         <button onClick={testAPI}>
-          🔄 Test API Endpoint
+          🔄 Test Users API
         </button>
       </div>
       

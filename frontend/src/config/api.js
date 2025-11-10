@@ -7,6 +7,9 @@ const API_CONFIG = {
   
   // API endpoints
   ENDPOINTS: {
+    // Health check
+    HEALTH: '/health',
+    
     // Authentication
     AUTH: {
       LOGIN: '/auth/login',
@@ -29,8 +32,8 @@ const API_CONFIG = {
     
     // Admin routes
     ADMIN: {
-      USERS: '/admin/users',
-      USER_BY_ID: (id) => `/admin/users/${id}`,
+      USERS: '/users',  // Updated to match backend
+      USER_BY_ID: (id) => `/users/${id}`,
       ROLES: '/admin/roles',
       ROLE_BY_ID: (id) => `/admin/roles/${id}`
     },
