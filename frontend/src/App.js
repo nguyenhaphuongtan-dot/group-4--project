@@ -20,6 +20,7 @@ import ChangePasswordPage from './pages/ChangePasswordPage';
 import AdvancedFeaturesPage from './pages/AdvancedFeaturesPage';
 import ActivityLogsPage from './pages/ActivityLogsPage';
 import RateLimitingPage from './pages/RateLimitingPage';
+import TestPage from './pages/TestPage';
 
 // Styles
 import './App.css';
@@ -43,6 +44,10 @@ const AppRouter = () => {
       <div className="App">
         <Routes>
           {/* Public Routes */}
+          <Route 
+            path="/test" 
+            element={<TestPage />} 
+          />
           <Route 
             path="/login" 
             element={<LoginPage />} 
