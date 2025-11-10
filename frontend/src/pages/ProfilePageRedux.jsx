@@ -28,10 +28,6 @@ const ProfilePage = () => {
     navigate('/login');
   };
 
-  const navigateToAdmin = () => {
-    navigate('/admin');
-  };
-
   if (isLoading) {
     return (
       <div className="profile-container">
@@ -69,31 +65,31 @@ const ProfilePage = () => {
         <div className="profile-info">
           <div className="info-item">
             <label>🏷️ Tên:</label>
-            <value>{user.name || 'Chưa cập nhật'}</value>
+            <span>{user.name || 'Chưa cập nhật'}</span>
           </div>
 
           <div className="info-item">
             <label>📧 Email:</label>
-            <value>{user.email || 'Chưa có email'}</value>
+            <span>{user.email || 'Chưa có email'}</span>
           </div>
 
           <div className="info-item">
             <label>🛡️ Vai trò:</label>
-            <value className={`role-badge ${user.role}`}>
+            <span className={`role-badge ${user.role}`}>
               {user.role === 'admin' ? '🛡️ Administrator' : '👤 User'}
-            </value>
+            </span>
           </div>
 
           <div className="info-item">
             <label>🆔 ID:</label>
-            <value className="user-id">{user._id || user.id}</value>
+            <span className="user-id">{user._id || user.id}</span>
           </div>
 
           <div className="info-item">
             <label>📅 Ngày tạo:</label>
-            <value>
+            <span>
               {user.createdAt ? new Date(user.createdAt).toLocaleDateString('vi-VN') : 'Chưa có thông tin'}
-            </value>
+            </span>
           </div>
         </div>
 
