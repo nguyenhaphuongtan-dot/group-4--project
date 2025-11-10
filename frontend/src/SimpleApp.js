@@ -13,6 +13,7 @@ import HomePage from './pages/HomePage';
 import LoginPageRedux from './pages/LoginPageRedux';
 import ProfilePageRedux from './pages/ProfilePageRedux';
 import AdminPageRedux from './pages/AdminPageRedux';
+import ChangePasswordPageRedux from './pages/ChangePasswordPageRedux';
 import ProtectedRouteRedux from './components/ProtectedRouteRedux';
 
 // HomePage component được import từ pages/HomePage.jsx
@@ -51,6 +52,14 @@ const SimpleApp = () => {
             element={
               <ProtectedRouteRedux adminOnly={true}>
                 <AdminPageRedux />
+              </ProtectedRouteRedux>
+            } 
+          />
+          <Route 
+            path="/change-password" 
+            element={
+              <ProtectedRouteRedux>
+                <ChangePasswordPageRedux />
               </ProtectedRouteRedux>
             } 
           />

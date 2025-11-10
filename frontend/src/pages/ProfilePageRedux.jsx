@@ -100,6 +100,10 @@ const ProfilePage = () => {
             </button>
           )}
           
+          <button onClick={() => navigate('/change-password')} className="change-password-button">
+            🔒 Đổi mật khẩu
+          </button>
+          
           <button onClick={() => navigate('/')} className="home-button">
             🏠 Trang chủ
           </button>

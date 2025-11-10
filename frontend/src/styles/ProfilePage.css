@@ -107,7 +107,7 @@
   margin-bottom: 30px;
 }
 
-.admin-button, .home-button, .logout-button, .login-redirect {
+.admin-button, .change-password-button, .home-button, .logout-button, .login-redirect {
   padding: 12px 20px;
   border: none;
   border-radius: 8px;
@@ -124,6 +124,15 @@
 
 .admin-button:hover {
   background: #c82333;
+}
+
+.change-password-button {
+  background: #ffc107;
+  color: #212529;
+}
+
+.change-password-button:hover {
+  background: #e0a800;
 }
 
 .home-button {

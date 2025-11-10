@@ -1,37 +1,33 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
+require('dotenv').config(); // Đọc biến môi trường từ file .env
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
 
 const app = express();
+
+// Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// ✅ Kết nối MongoDB Atlas
-mongoose.connect("mongodb+srv://danhhungthao_db_user:u9PaNiwyAVyquN3a@cluster0.wu9qtho.mongodb.net/mydb?retryWrites=true&w=majority&appName=Cluster0")
-  .then(() => console.log("✅ MongoDB Connected to Atlas"))
-  .catch(err => console.log("❌ MongoDB connection error:", err));
+// Import routes
+const userRoutes = require('./routes/user');
+app.use('/users', userRoutes);
 
-// Schema User
-const UserSchema = new mongoose.Schema({
-  name: String,
-  email: String
-});
-const User = mongoose.model("User", UserSchema);
+// Lấy biến môi trường từ .env
+const PORT = process.env.PORT || 3000;
+const MONGO_URI = process.env.MONGO_URI;
+const DB_NAME = process.env.DB_NAME || 'groupDB';
 
-// API: lấy tất cả user
-app.get("/api/users", async (req, res) => {
-  const users = await User.find();
-  res.json(users);
-});
-
-// API: thêm user
-app.post("/api/users", async (req, res) => {
-  const { name, email } = req.body;
-  const newUser = new User({ name, email });
-  await newUser.save();
-  res.json(newUser);
-});
-
-app.listen(5000, () => {
-  console.log("🚀 Backend running at http://localhost:5000");
-});
+// Kết nối MongoDB trước khi khởi động server
+mongoose.connect(MONGO_URI, {
+  dbName: DB_NAME,
+  serverSelectionTimeoutMS: 10000,
+})
+  .then(() => {
+    console.log('✅ Kết nối MongoDB thành công');
+    app.listen(PORT, () => console.log(`🚀 Server chạy ở cổng ${PORT}`));
+  })
+  .catch((err) => {
+    console.error('❌ Lỗi kết nối MongoDB:', err.message);
+  });
