@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { adminService } from "./services/api";
 import API_CONFIG from "./config/api";
+import TestConnection from "./TestConnection";
 
 function App() {
+  const [showTest, setShowTest] = useState(true);
   const [users, setUsers] = useState([]);
   const [newUser, setNewUser] = useState({ username: "", email: "", fullName: "" });
   const [editingUser, setEditingUser] = useState(null); // User đang sửa
@@ -79,8 +81,26 @@ function App() {
     }
   };
 
+  if (showTest) {
+    return (
+      <div>
+        <TestConnection />
+        <div style={{ padding: '20px' }}>
+          <button onClick={() => setShowTest(false)}>
+            ➡️ Chuyển sang User Management
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={{ padding: "20px" }}>
+      <div style={{ marginBottom: '20px' }}>
+        <button onClick={() => setShowTest(true)}>
+          🔧 Connection Test
+        </button>
+      </div>
       <h1>Group 4 - User Management</h1>
       <p>Kết nối tới: <code>{API_CONFIG.BASE_URL}</code></p>
       
