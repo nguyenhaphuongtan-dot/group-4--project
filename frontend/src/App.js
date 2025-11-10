@@ -34,7 +34,7 @@ function App() {
     e.preventDefault();
     setError("");
     try {
-      const response = await adminService.createUser(newUser);
+      await adminService.createUser(newUser);
       await fetchUsers(); // Refresh danh sách
       setNewUser({ username: "", email: "", fullName: "" });
     } catch (err) {
