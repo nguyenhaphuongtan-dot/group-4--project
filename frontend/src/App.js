@@ -117,9 +117,11 @@ const AppRouter = () => {
             path="/" 
             element={
               isAuthenticated ? (
-                <Navigate to="/profile" replace />
+                <ProtectedRoute>
+                  <HomePage />
+                </ProtectedRoute>
               ) : (
-                <HomePage />
+                <LoginPage />
               )
             } 
           />
