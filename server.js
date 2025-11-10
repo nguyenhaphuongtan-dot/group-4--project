@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 require('dotenv').config();
 const { dbConnection } = require('./config/database');
 const User = require('./models/User');
@@ -26,6 +27,19 @@ const PORT = process.env.PORT || 3000;
 
 // JWT Secret for demo (in production, use environment variable)
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+
+// CORS configuration for production
+app.use(cors({
+    origin: [
+        'http://localhost:3000',
+        'http://localhost:3001', 
+        'https://group4-frontend.vercel.app',
+        'https://*.vercel.app'
+    ],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // Middleware để parse JSON
 app.use(express.json());

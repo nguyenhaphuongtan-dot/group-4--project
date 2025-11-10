@@ -20,7 +20,9 @@
     "test:schema": "node test-schema.js",
     "test:cloudinary": "node test-cloudinary-reset-password.js",
     "test:integration": "npm run test:schema && npm run test:cloudinary",
-    "postman:ready": "npm run test:integration && npm start"
+    "postman:ready": "npm run test:integration && npm start",
+    "build": "echo 'No build step required for Node.js'",
+    "postinstall": "echo 'Backend ready for production'"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",

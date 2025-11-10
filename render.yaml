@@ -1,0 +1,37 @@
+services:
+  - type: web
+    name: group4-backend-main
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        fromDatabase:
+          name: group4-mongodb
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRE
+        value: 24h
+      - key: BCRYPT_ROUNDS
+        value: 12
+      - key: MAX_LOGIN_ATTEMPTS
+        value: 5
+      - key: LOCK_TIME
+        value: 7200000
+      - key: APP_NAME
+        value: Group 4 Professional Backend API
+      - key: APP_VERSION
+        value: 2.0.0
+      - key: FRONTEND_URL
+        value: https://group4-frontend.vercel.app
+
+databases:
+  - name: group4-mongodb
+    plan: free
