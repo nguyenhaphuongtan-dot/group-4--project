@@ -77,6 +77,7 @@ const AdminPage = () => {
 
   useEffect(() => {
     fetchUsers();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Handle form input
@@ -313,6 +314,9 @@ const AdminPage = () => {
         <div className="table-section">
           <div className="table-card">
             <h3>📋 Danh sách Users ({filteredUsers.length})</h3>
+            {error && (
+              <div className="error-message">❌ {error}</div>
+            )}
             {loading ? (
               <div className="loading">⏳ Đang tải...</div>
             ) : (
